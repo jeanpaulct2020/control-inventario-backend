@@ -11,4 +11,8 @@ public interface ICategoryService {
     ResponseEntity<CategoryResponseRest> searchById(Long idCategory);
 
     ResponseEntity<CategoryResponseRest> create(Category category); //debe ir un category request no el modelo
+
+    ResponseEntity<CategoryResponseRest> update(Long idCategory, Category category); //debe ir un category request no el modelo
+
+
 }
