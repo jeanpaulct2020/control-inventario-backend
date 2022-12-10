@@ -14,5 +14,6 @@ public interface ICategoryService {
 
     ResponseEntity<CategoryResponseRest> update(Long idCategory, Category category); //debe ir un category request no el modelo
 
+    ResponseEntity<CategoryResponseRest> delete(Long idCategory); //debe ir un category request no el modelo
 
 }
