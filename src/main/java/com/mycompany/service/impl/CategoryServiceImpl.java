@@ -1,6 +1,7 @@
 package com.mycompany.service.impl;
 
 
+import antlr.StringUtils;
 import com.mycompany.model.Category;
 import com.mycompany.repository.ICategoryRepository;
 import com.mycompany.response.CategoryResponseRest;
@@ -45,6 +46,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<CategoryResponseRest> searchById(Long idCategory) {
         //declaramos la respuesta
         CategoryResponseRest response = new CategoryResponseRest();
@@ -67,6 +69,34 @@ public class CategoryServiceImpl implements ICategoryService {
 
         }catch (Exception e){
             response.setMetadata("Respuesta No Ok", "-1", "Error al consultar por ID");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CategoryResponseRest> create(Category category) {
+        //declaramos la respuesta
+        CategoryResponseRest response = new CategoryResponseRest();
+        List<Category> listCategories = new ArrayList<>();
+        try{
+            //seteamos y guardamos la cateogira
+            Category categoryToDB = categoryRepository.save(category);
+
+            //validamos
+            if(categoryToDB != null){
+                listCategories.add(categoryToDB);
+                response.getCategoryResponse().setCategory(listCategories);
+                response.setMetadata("Respuesta Ok", "00", "Categoria grabada");
+            }else{
+                response.setMetadata("Respuesta No Ok", "-1", "Categoria no grabada");
+                return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception e){
+            response.setMetadata("Respuesta No Ok", "-1", "Error al grabar categoria");
             e.getStackTrace();
             return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
